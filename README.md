@@ -111,7 +111,7 @@ docker run --name postgres_rbac \
 
 ---
 
-## ⚙️ Configuration
+##  Configuration
 
 ### Variables d'environnement
 
@@ -154,46 +154,46 @@ Le seed crée automatiquement un compte admin :
 - **Username:** admin
 - **Password:** admin123
 
-⚠️ **Changez ce mot de passe en production !**
+
 
 ---
 
-## 📚 Documentation API
+##  Documentation API
 
 ### Endpoints principaux
 
-#### 🔐 Authentification (`/auth`)
+####  Authentification (`/auth`)
 - `POST /auth/login` - Connexion et obtention du token JWT
 - `GET /auth/moi` - Informations de l'utilisateur connecté
 - `POST /auth/changer-mot-de-passe` - Changer son mot de passe
 
-#### 👥 Utilisateurs (`/utilisateurs`)
+####  Utilisateurs (`/utilisateurs`)
 - `POST /utilisateurs` - Créer un utilisateur (Permission: creer_utilisateurs)
 - `GET /utilisateurs` - Lister les utilisateurs (Permission: lire_utilisateurs)
 - `GET /utilisateurs/{id}` - Obtenir un utilisateur
 - `PATCH /utilisateurs/{id}` - Modifier un utilisateur
 - `DELETE /utilisateurs/{id}` - Supprimer un utilisateur
 
-#### 🎭 Rôles (`/roles`)
+####  Rôles (`/roles`)
 - `POST /roles` - Créer un rôle (Permission: gerer_roles)
 - `GET /roles` - Lister les rôles (Permission: lire_roles)
 - `GET /roles/{id}` - Obtenir un rôle
 - `PATCH /roles/{id}` - Modifier un rôle
 - `DELETE /roles/{id}` - Supprimer un rôle
 
-#### 🔑 Permissions (`/permissions`)
+####  Permissions (`/permissions`)
 - `POST /permissions` - Créer une permission (Permission: gerer_permissions)
 - `GET /permissions` - Lister les permissions (Permission: lire_permissions)
 - `POST /permissions/attribuer` - Attribuer des permissions à un rôle
 
-#### 📢 Canaux (`/canaux`)
+####  Canaux (`/canaux`)
 - `POST /canaux` - Créer un canal (Permission: creer_canaux)
 - `GET /canaux` - Lister les canaux (Permission: lire_canaux)
 - `GET /canaux/{id}` - Obtenir un canal
 - `PATCH /canaux/{id}` - Modifier un canal
 - `DELETE /canaux/{id}` - Supprimer un canal
 
-#### 💬 Messages (`/messages`)
+####  Messages (`/messages`)
 - `POST /messages` - Envoyer un message (Permission: envoyer_messages)
 - `GET /messages/canal/{canal_id}` - Historique d'un canal
 - `GET /messages/{id}` - Obtenir un message
@@ -206,7 +206,7 @@ Le seed crée automatiquement un compte admin :
 
 ---
 
-## 📁 Structure du projet
+##  Structure du projet
 
 ```
 gestion_rbac_chat/
