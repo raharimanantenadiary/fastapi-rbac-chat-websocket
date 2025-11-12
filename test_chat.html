@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💬 Chat RBAC - Temps Réel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            max-height: 800px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .header-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .disconnect-button-header {
+            background: #25D366;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .disconnect-button-header:hover {
+            background: #20b358;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 211, 102, 0.4);
+        }
+        
+        .login-section {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+        }
+        
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+        
+        .login-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102,126,234,0.4);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .chat-section {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .canal-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        .canal-selector label {
+            margin: 0;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .canal-selector select {
+            width: auto;
+            min-width: 200px;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .status-indicator.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-indicator.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator.connected .status-dot {
+            background: #28a745;
+        }
+        
+        .status-indicator.disconnected .status-dot {
+            background: #dc3545;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 30px;
+            background: #f8f9fa;
+        }
+        
+        .messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .messages-container::-webkit-scrollbar-track {
+            background: #e0e0e0;
+        }
+        
+        .messages-container::-webkit-scrollbar-thumb {
+            background: #999;
+            border-radius: 4px;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .message-bubble {
+            background: white;
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            max-width: 70%;
+        }
+        
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        
+        .message-author {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 14px;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            color: #999;
+        }
+        
+        .message-content {
+            color: #333;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .message.notification .message-bubble {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-left: 4px solid #667eea;
+            max-width: 100%;
+        }
+        
+        .message.notification .message-content {
+            color: #555;
+            font-style: italic;
+            font-size: 14px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .empty-state-subtext {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .input-area {
+            background: white;
+            padding: 20px 30px;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .input-area input {
+            flex: 1;
+            padding: 16px 24px;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            font-size: 16px;
+        }
+        
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+        
+        .send-button {
+            width: auto;
+            padding: 16px 35px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                max-height: none;
+                border-radius: 0;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .chat-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+            
+            .canal-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .canal-selector select {
+                width: 100%;
+            }
+            
+            .message-bubble {
+                max-width: 90%;
+            }
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 16px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #999;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>💬 Chat RBAC</h1>
+                <p>Système de chat en temps réel avec gestion des permissions</p>
+            </div>
+            <div class="header-right" id="headerRight" style="display: none;">
+                <div class="user-badge">
+                    <span>👤</span>
+                    <span id="currentUser">Utilisateur</span>
+                </div>
+                <button onclick="deconnecter()" class="disconnect-button-header">
+                    🚪 Déconnexion
+                </button>
+            </div>
+        </div>
+        
+        <div class="login-section" id="loginSection">
+            <div class="login-box">
+                <h2 class="login-title">🔐 Connexion</h2>
+                <div class="form-group">
+                    <label for="username">Nom d'utilisateur</label>
+                    <input type="text" id="username" placeholder="admin" value="admin" autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" placeholder="••••••••" value="admin123" autocomplete="current-password">
+                </div>
+                
+                <button onclick="login()">Se connecter</button>
+            </div>
+        </div>
+        
+        <div class="chat-section hidden" id="chatSection">
+            <div class="chat-header">
+                <div class="canal-selector">
+                    <label for="canalSelect">📢 Canal</label>
+                    <select id="canalSelect" onchange="changerCanal()">
+                        <option value="">-- Sélectionner un canal --</option>
+                    </select>
+                </div>
+                
+                <div class="status-indicator disconnected" id="statusIndicator">
+                    <div class="status-dot"></div>
+                    <span id="statusText">Déconnecté</span>
+                </div>
+            </div>
+            
+            <div class="messages-container" id="messagesContainer">
+                <div class="empty-state">
+                    <div class="empty-state-icon">💭</div>
+                    <div class="empty-state-text">Aucun canal sélectionné</div>
+                    <div class="empty-state-subtext">Choisissez un canal pour commencer à chatter</div>
+                </div>
+            </div>
+            
+            <div class="input-area">
+                <input 
+                    type="text" 
+                    id="messageInput" 
+                    placeholder="Tapez votre message..." 
+                    onkeypress="handleKeyPress(event)" 
+                    disabled
+                >
+                <button onclick="envoyerMessage()" id="sendButton" class="send-button" disabled>
+                    <span>✈️</span>
+                    <span>Envoyer</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let token = null;
+        let websocket = null;
+        let canalActuel = null;
+        let nomUtilisateurCourant = null;
+        
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                alert('⚠️ Veuillez remplir tous les champs');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `username=${username}&password=${password}`
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Nom d\'utilisateur ou mot de passe incorrect');
+                }
+                
+                const data = await response.json();
+                token = data.access_token;
+                nomUtilisateurCourant = username;
+                
+                await chargerCanaux();
+                
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('chatSection').classList.remove('hidden');
+                document.getElementById('headerRight').style.display = 'flex';
+                document.getElementById('currentUser').textContent = username;
+                
+            } catch (error) {
+                alert('❌ Erreur de connexion: ' + error.message);
+            }
+        }
+        
+        async function chargerCanaux() {
+            try {
+                const response = await fetch('http://localhost:8000/canaux', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const canaux = await response.json();
+                const select = document.getElementById('canalSelect');
+                select.innerHTML = '<option value="">-- Sélectionner un canal --</option>';
+                
+                canaux.forEach(canal => {
+                    const option = document.createElement('option');
+                    option.value = canal.id;
+                    option.textContent = `# ${canal.nom}`;
+                    select.appendChild(option);
+                });
+                
+            } catch (error) {
+                console.error('Erreur chargement canaux:', error);
+            }
+        }
+        
+        function changerCanal() {
+            const canalId = document.getElementById('canalSelect').value;
+            
+            if (!canalId) {
+                afficherEtatVide();
+                return;
+            }
+            
+            if (websocket) {
+                websocket.close();
+            }
+            
+            canalActuel = canalId;
+            connecterWebSocket(canalId);
+        }
+        
+        function afficherEtatVide() {
+            document.getElementById('messagesContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">💭</div>
+                    <div class="empty-state-text">Aucun canal sélectionné</div>
+                    <div class="empty-state-subtext">Choisissez un canal pour commencer à chatter</div>
+                </div>
+            `;
+        }
+        
+        function connecterWebSocket(canalId) {
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            document.getElementById('messagesContainer').innerHTML = `
+                <div class="empty-state">
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    <div class="empty-state-text">Connexion en cours...</div>
+                </div>
+            `;
+            
+            websocket = new WebSocket(`ws://localhost:8000/ws/chat/${canalId}?token=${token}`);
+            
+            websocket.onopen = () => {
+                statusIndicator.className = 'status-indicator connected';
+                statusText.textContent = 'Connecté';
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('sendButton').disabled = false;
+                document.getElementById('messagesContainer').innerHTML = '';
+            };
+            
+            websocket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                afficherMessage(data);
+            };
+            
+            websocket.onerror = (error) => {
+                console.error('Erreur WebSocket:', error);
+                statusIndicator.className = 'status-indicator disconnected';
+                statusText.textContent = 'Erreur de connexion';
+            };
+            
+            websocket.onclose = () => {
+                statusIndicator.className = 'status-indicator disconnected';
+                statusText.textContent = 'Déconnecté';
+                document.getElementById('messageInput').disabled = true;
+                document.getElementById('sendButton').disabled = true;
+            };
+        }
+        
+        function afficherMessage(data) {
+            const container = document.getElementById('messagesContainer');
+            const messageElement = document.createElement('div');
+            
+            if (data.type === 'message') {
+                messageElement.className = 'message';
+                messageElement.innerHTML = `
+                    <div class="message-bubble">
+                        <div class="message-header">
+                            <span class="message-author">${data.auteur.nom_utilisateur}</span>
+                            <span class="message-time">${new Date(data.date_creation).toLocaleTimeString('fr-FR')}</span>
+                        </div>
+                        <div class="message-content">${escapeHtml(data.contenu)}</div>
+                    </div>
+                `;
+            } else if (data.type === 'notification' || data.type === 'connexion') {
+                messageElement.className = 'message notification';
+                messageElement.innerHTML = `
+                    <div class="message-bubble">
+                        <div class="message-content">
+                            ${data.message}
+                            ${data.utilisateurs_connectes ? ` • ${data.utilisateurs_connectes} utilisateur(s) connecté(s)` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.appendChild(messageElement);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function envoyerMessage() {
+            const input = document.getElementById('messageInput');
+            const contenu = input.value.trim();
+            
+            if (!contenu || !websocket) return;
+            
+            websocket.send(JSON.stringify({
+                contenu: contenu,
+                type_message: 'texte'
+            }));
+            
+            input.value = '';
+            input.focus();
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                envoyerMessage();
+            }
+        }
+        
+        function deconnecter() {
+            if (websocket) {
+                websocket.close();
+            }
+            
+            token = null;
+            canalActuel = null;
+            nomUtilisateurCourant = null;
+            
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
+            document.getElementById('headerRight').style.display = 'none';
+            document.getElementById('messagesContainer').innerHTML = '';
+            document.getElementById('canalSelect').value = '';
+        }
+    </script>
+</body>
+</html>
