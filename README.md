@@ -2,57 +2,35 @@
 
 Système complet de gestion des utilisateurs, rôles, permissions (RBAC) et chat en temps réel avec FastAPI, PostgreSQL et WebSocket.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![Python](https://img.shields.io/badge/python-3.10+-green)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-teal)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue)
 
----
+##  Fonctionnalités
 
-## 📋 Table des matières
-
-- [Fonctionnalités](#fonctionnalités)
-- [Technologies](#technologies)
-- [Prérequis](#prérequis)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Lancement](#lancement)
-- [Documentation API](#documentation-api)
-- [Structure du projet](#structure-du-projet)
-- [Tests](#tests)
-- [Déploiement](#déploiement)
-- [Sécurité](#sécurité)
-
----
-
-## ✨ Fonctionnalités
-
-### 🔐 Authentification & Autorisation
+###  Authentification & Autorisation
 - Authentification JWT sécurisée
 - Système RBAC (Role-Based Access Control)
 - Gestion des rôles et permissions granulaires
 - Middleware de vérification des permissions
 
-### 👥 Gestion des utilisateurs
+###  Gestion des utilisateurs
 - CRUD complet des utilisateurs
 - Activation/désactivation des comptes
 - Vérification des emails
 - Changement de mot de passe sécurisé
 
-### 🎭 Gestion des rôles
+###  Gestion des rôles
 - CRUD des rôles
 - Attribution dynamique des permissions
 - 4 rôles par défaut : Admin, Modérateur, Utilisateur, Invité
 - 16 permissions prédéfinies
 
-### 💬 Chat en temps réel
+###  Chat en temps réel
 - WebSocket pour communication instantanée
 - Support multi-canaux
 - Notifications de connexion/déconnexion
 - Historique des messages persistant
 - Permissions RBAC sur le chat
 
-### 📊 Fonctionnalités supplémentaires
+###  Fonctionnalités supplémentaires
 - Documentation Swagger automatique
 - Seed de données automatique au démarrage
 - Support CORS pour intégration front-end
@@ -60,7 +38,7 @@ Système complet de gestion des utilisateurs, rôles, permissions (RBAC) et chat
 
 ---
 
-## 🛠️ Technologies
+##  Technologies
 
 - **Backend:** FastAPI 0.115.0
 - **Base de données:** PostgreSQL 13+
@@ -70,18 +48,8 @@ Système complet de gestion des utilisateurs, rôles, permissions (RBAC) et chat
 - **WebSocket:** Native FastAPI
 - **Serveur:** Uvicorn
 
----
 
-## 📦 Prérequis
-
-- Python 3.10 ou supérieur
-- PostgreSQL 13 ou supérieur
-- pip (gestionnaire de paquets Python)
-- Un navigateur moderne (pour l'interface de test)
-
----
-
-## 🚀 Installation
+##  Installation
 
 ### 1. Cloner le projet
 
@@ -163,16 +131,8 @@ PROJECT_NAME=Gestion RBAC Chat
 DEBUG=True
 ```
 
-⚠️ **IMPORTANT** : Changez la `SECRET_KEY` en production !
 
-Générer une clé sécurisée :
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
-
----
-
-## 🎯 Lancement
+##  Lancement
 
 ### Démarrer l'application
 
@@ -186,7 +146,7 @@ L'API sera disponible sur : **http://localhost:8000**
 
 - **Documentation Swagger:** http://localhost:8000/docs
 - **Documentation ReDoc:** http://localhost:8000/redoc
-- **Interface de test:** Ouvrir `test_chat.html` dans un navigateur
+- **Interface de test:** Ouvrir `chat.html` dans un navigateur
 
 ### Compte administrateur par défaut
 
@@ -300,26 +260,10 @@ gestion_rbac_chat/
 └── README.md
 ```
 
----
-
-## 🧪 Tests
-
-### Tester l'API avec curl
-
-```bash
-# 1. Se connecter
-curl -X POST "http://localhost:8000/auth/login" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=admin&password=admin123"
-
-# 2. Copier le token et lister les utilisateurs
-curl -X GET "http://localhost:8000/utilisateurs" \
-  -H "Authorization: Bearer VOTRE_TOKEN_ICI"
-```
 
 ### Tester le WebSocket
 
-1. Ouvrir `test_chat.html` dans un navigateur
+1. Ouvrir `chat.html` dans un navigateur
 2. Se connecter avec admin/admin123
 3. Sélectionner un canal
 4. Envoyer des messages
@@ -331,96 +275,10 @@ curl -X GET "http://localhost:8000/utilisateurs" \
 3. Entrer : admin / admin123
 4. Tester tous les endpoints
 
----
 
-## 🚢 Déploiement
 
-### Variables d'environnement en production
 
-```env
-DATABASE_URL=postgresql://user:password@host:5432/dbname
-SECRET_KEY=<clé_générée_aléatoirement>
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-PROJECT_NAME=Gestion RBAC Chat
-DEBUG=False
-```
 
-### Avec Docker
-
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### Avec Gunicorn (production)
-
-```bash
-pip install gunicorn
-gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
-```
-
----
-
-## 🔒 Sécurité
-
-### Bonnes pratiques implémentées
-
-✅ Mots de passe hashés avec Bcrypt  
-✅ Tokens JWT avec expiration  
-✅ Vérification des permissions sur chaque endpoint  
-✅ Protection CORS configurable  
-✅ Validation des données avec Pydantic  
-✅ Soft delete pour les messages  
-
-### Recommandations pour la production
-
-- [ ] Changer toutes les valeurs par défaut (.env, mots de passe)
-- [ ] Configurer CORS avec des domaines spécifiques
-- [ ] Activer HTTPS
-- [ ] Utiliser des variables d'environnement sécurisées
-- [ ] Mettre en place des rate limits
-- [ ] Activer les logs de sécurité
-- [ ] Sauvegardes régulières de la base de données
-
----
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à :
-- Signaler des bugs
-- Proposer des fonctionnalités
-- Soumettre des pull requests
-
----
-
-## 📄 Licence
-
-Ce projet est sous licence MIT.
-
----
-
-## 👨‍💻 Auteur
-
-Développé avec ❤️ en Python & FastAPI
-
----
-
-## 📞 Support
-
-Pour toute question ou problème :
+## Support
 - Consulter la documentation : http://localhost:8000/docs
-- Ouvrir une issue sur GitHub
-- Consulter les fichiers de tests : `TESTS_PHASE_*.txt`
 
----
-
-**⭐ Si ce projet vous est utile, n'hésitez pas à lui donner une étoile !**
